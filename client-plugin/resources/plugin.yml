@@ -1,0 +1,10 @@
+#TODO: Replace this with the plugin.yml of the origin plugin.
+
+name: LicenseClient
+main: cn.mcres.angustifolia.licenseclient.LicenseClient
+version: 1.0-SNAPSHOT
+
+authors: [Lucky_fish20]
+description: The client side of the license system of mcres.cn
+website: https://mcres.cn
+api-version: 1.13.2
