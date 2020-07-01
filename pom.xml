@@ -24,6 +24,7 @@
 	<modules>
 		<module>client-plugin</module>
 		<module>upload</module>
+		<module>obfuscate</module>
 		<module>java-debug</module>
 	</modules>
 	<dependencies>

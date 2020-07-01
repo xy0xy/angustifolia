@@ -52,6 +52,9 @@ public class Fluoxetine {
 			ef.applyTemplate(new File(templateJar), order);
 			ef.updateEntry();
 
+			// And we need to obfuscate them again.
+
+
 			// Ok we have built the jar, now generate headers.
 			File tempFile = new File(tempFileName(targetJar));
 			Map<String, String> classes = ef.getHeaderNeededClasses();
