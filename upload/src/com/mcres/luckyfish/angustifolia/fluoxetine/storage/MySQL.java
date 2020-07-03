@@ -37,7 +37,7 @@ public class MySQL implements Database {
 
 	private Connection connect() throws Exception {
 		Class<?> mysqlClazz = Driver.class;
-		return DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, user, password);
+		return DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?allowPublicKeyRetrieval=true", user, password);
 	}
 
 	@Override
