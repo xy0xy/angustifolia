@@ -15,8 +15,8 @@ public final class PluginLicenseClient extends JavaPlugin {
 	// They are not final so we can modify them there.
 	public static int userId = 0;         // where the user id is, will be modified by plugin modifier on mcres.cn
 	public static int resourceId = 0;     // where the resource id is, will be modified by plugin modifier on mcres.cn <-- maybe dangerous, I'd like to change later ._.
-	private static final String MAIN_CLASS = ""; // where the real main class is, will be modified by plugin modifier on mcres.cn
-	private static final String order = "";
+	private static String MAIN_CLASS = ""; // where the real main class is, will be modified by plugin modifier on mcres.cn
+	private static String order = "";
 
 	// keep the class loader there so that we can keep the independence of the plugin classes.
 	private EncryptedClassLoader ecl;

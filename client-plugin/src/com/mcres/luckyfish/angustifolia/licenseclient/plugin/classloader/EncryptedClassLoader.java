@@ -92,12 +92,16 @@ public class EncryptedClassLoader extends URLClassLoader {
 					}
 				}
 
-				if (result == null && !checkGlobal) {
-					result = findClass(name, true);
-				}
+				try {
+					if (result == null && !checkGlobal) {
+						result = findClass(name, true);
+					}
 
-				if (result == null) {
-					result = super.findClass(name);
+					if (result == null) {
+						result = super.findClass(name);
+					}
+				} catch (ClassNotFoundException e) {
+					throw new ClassNotFoundException(name);
 				}
 
 				if (result != null) {
