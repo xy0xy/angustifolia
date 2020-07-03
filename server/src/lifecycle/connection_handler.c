@@ -19,6 +19,9 @@ void handle_connection(NetworkManager * client)
 	if (!isKeyValid(signatureKey))
 	{
 		signatureKey = generateKey();
+		char * hex = BN_bn2hex(EC_KEY_get0_private_key(signatureKey.key));
+		printf("INFO: Generated private key: %s", hex);
+		free(hex);
 		saveKey(decryptKey, "key");
 	}
 	
