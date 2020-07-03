@@ -16,9 +16,9 @@ public class JNICodeGenerator {
 	private final Map<String, String> nativeNeedClasses;
 	private final Map<String, String> classMapping;
 
-	private static final File linuxDirtectory = new File("linux-client-source");
-	private static final File windowsDirectory = new File("windows-client-source");
-	private static final File macDirectory = new File("mac-client-source");
+	private static final File linuxDirtectory = new File("client-natives-linux");
+	private static final File windowsDirectory = new File("client-natives-windows");
+	private static final File macDirectory = new File("client-natives-mac");
 
 	public JNICodeGenerator(File file, Map<String, String> nativeNeedClasses, Map<String, String> classMapping) {
 		this.nativeNeedClasses = nativeNeedClasses;
