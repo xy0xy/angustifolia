@@ -52,7 +52,7 @@ public class EncryptedClassLoader extends URLClassLoader {
 
 			if (result == null) {
 				// check the name so that nobody can hack into it.
-				if (!name.startsWith("cn.mcres.luckyfish.angustifolia.")) {
+				if (!name.startsWith("com.mcres.luckyfish.angustifolia.")) {
 					String path = name.replace('.', '/').concat(".class");
 					JarEntry entry = jar.getJarEntry(path);
 
