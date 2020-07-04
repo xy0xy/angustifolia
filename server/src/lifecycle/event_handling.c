@@ -120,8 +120,6 @@ int onClientError(NetworkManager client, Packet * errorPacket, WrappedKey signKe
 int onClientRequestDecrypt(NetworkManager client, Packet * requestPacket, WrappedKey signKey, WrappedKey decryptKey, WrappedKey clientEncryptKey)
 {
 	int errno = 1;
-	// one of the most possible attack entry point.
-	// TODO: be careful when coding.
 	
 	size_t dataRead;
 	void * encrypted = readPacket(requestPacket, &dataRead);
@@ -383,7 +381,16 @@ int onClientRequestVerify(NetworkManager client, Packet * requestPacket, Wrapped
 	free(encrypted);
 	free(decrypted);
 	destroyPacket(requestPacket);
-	free(data);
+	if (data)
+	{
+		for (size_t i = 0; i < dataAmount; i++)
+		{
+			LicenseData check = data[i];
+			free(check.motherboardId);
+			free(check.order);
+		}
+		free(data);
+	}
 	return errno;
 }
 
