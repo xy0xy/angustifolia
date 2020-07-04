@@ -57,8 +57,8 @@ int main()
 	
 	if (initMySQL())
 	{
-	    printf("Failed to initialize mysql module :(");
-	    return -1;
+		printf("Failed to initialize mysql module :(");
+		return -1;
 	}
 	
 #ifdef TEST_NETWORK

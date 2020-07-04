@@ -190,31 +190,31 @@ int onClientRequestDecrypt(NetworkManager client, Packet * requestPacket, Wrappe
 	
 	LicenseData * verifiedData = NULL;
 	if (data)
-    {
-        for (size_t i = 0; i < dataAmount; i++)
-        {
-            LicenseData check = data[i];
+	{
+		for (size_t i = 0; i < dataAmount; i++)
+		{
+			LicenseData check = data[i];
 
-            if (check.resource_id != resourceId)
-                continue;
+			if (check.resource_id != resourceId)
+				continue;
 
-            if (data->motherboardUpdateRequired)
-            {
-                updateMotherboard(session, order, orderLen, userId, resourceId, encodedMotherboardId, encodedMotherboardIdLen);
-                verifiedData = &check;
-                break;
-            }
+			if (data->motherboardUpdateRequired)
+			{
+				updateMotherboard(session, order, orderLen, userId, resourceId, encodedMotherboardId, encodedMotherboardIdLen);
+				verifiedData = &check;
+				break;
+			}
 
-            if (check.motherboardIdLen != encodedMotherboardIdLen)
-                continue;
+			if (check.motherboardIdLen != encodedMotherboardIdLen)
+				continue;
 
-            if (!memcmp(check.motherboardId, encodedMotherboardId, encodedMotherboardIdLen * sizeof(char)))
-            {
-                verifiedData = &check;
-                break;
-            }
-        }
-    }
+			if (!memcmp(check.motherboardId, encodedMotherboardId, encodedMotherboardIdLen * sizeof(char)))
+			{
+				verifiedData = &check;
+				break;
+			}
+		}
+	}
 	
 	disconnectFromMySQL(session);
 	
@@ -271,15 +271,15 @@ int onClientRequestDecrypt(NetworkManager client, Packet * requestPacket, Wrappe
 	free(encodedMotherboardId);
 	destroyPacket(requestPacket);
 	if (data)
-    {
-        for (size_t i = 0; i < dataAmount; i++)
-        {
-            LicenseData check = data[i];
-            free(check.motherboardId);
-            free(check.order);
-        }
-        free(data);
-    }
+	{
+		for (size_t i = 0; i < dataAmount; i++)
+		{
+			LicenseData check = data[i];
+			free(check.motherboardId);
+			free(check.order);
+		}
+		free(data);
+	}
 	return errno;
 }
 int onClientRequestVerify(NetworkManager client, Packet * requestPacket, WrappedKey signKey, WrappedKey decryptKey, WrappedKey clientEncryptKey)

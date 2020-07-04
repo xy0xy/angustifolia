@@ -30,9 +30,9 @@ WrappedMySQLSession * connectMySQL(unsigned int port)
 	unsigned int timeout = 300;
 	unsigned int retries = 10;
 
-    mysql_options(mysql, MYSQL_OPT_RECONNECT, &reconnect);
-    mysql_options(mysql, MYSQL_OPT_CONNECT_TIMEOUT, &timeout);
-    mysql_options(mysql, MYSQL_OPT_RETRY_COUNT, &retries);
+	mysql_options(mysql, MYSQL_OPT_RECONNECT, &reconnect);
+	mysql_options(mysql, MYSQL_OPT_CONNECT_TIMEOUT, &timeout);
+	mysql_options(mysql, MYSQL_OPT_RETRY_COUNT, &retries);
 
 	mysql_real_connect(mysql, "127.0.0.1", USER_NAME, PASSWORD, DATABASE_NAME, port, NULL, CLIENT_MULTI_RESULTS);
 	
@@ -45,7 +45,7 @@ LicenseData * getLicenseDataInMySQL(WrappedMySQLSession * session, size_t *amoun
 	LicenseData * result = NULL;
 	size_t length = strlen(QUERY_COMMAND) + strlen(TABLE_NAME) + 1;
 	char * query = malloc(sizeof(char) * length);
-    MYSQL_STMT * preparedStatement = NULL;
+	MYSQL_STMT * preparedStatement = NULL;
 	if (!query)
 		goto final;
 	memset(query, 0, length * sizeof(char));
@@ -56,7 +56,7 @@ LicenseData * getLicenseDataInMySQL(WrappedMySQLSession * session, size_t *amoun
 //		goto final;
 	preparedStatement = mysql_stmt_init(session->sock);
 
-    mysql_stmt_prepare(preparedStatement, query, strlen(query));
+	mysql_stmt_prepare(preparedStatement, query, strlen(query));
 
 	MYSQL_BIND boundArguments[2];
 	memset(boundArguments, 0, sizeof(MYSQL_BIND) * 2);
@@ -72,43 +72,43 @@ LicenseData * getLicenseDataInMySQL(WrappedMySQLSession * session, size_t *amoun
 
 	mysql_stmt_execute(preparedStatement);
 
-    MYSQL_BIND boundResults[5] = { 0 };
+	MYSQL_BIND boundResults[5] = { 0 };
 
-    size_t resultLen[5] = { 0 };
+	size_t resultLen[5] = { 0 };
 
-    int userId = 0;
-    char motherboardId[255] = { 0 };
-    char orderTarget[255] = { 0 };
-    char decryptPassword[255] = { 0 };
-    int resourceId = 0;
+	int userId = 0;
+	char motherboardId[255] = { 0 };
+	char orderTarget[255] = { 0 };
+	char decryptPassword[255] = { 0 };
+	int resourceId = 0;
 
-    boundResults[0].buffer_type = MYSQL_TYPE_LONG;
-    boundResults[0].buffer = &userId;
-    boundResults[0].buffer_length = sizeof(int);
-    boundResults[0].length = &resultLen[0];
+	boundResults[0].buffer_type = MYSQL_TYPE_LONG;
+	boundResults[0].buffer = &userId;
+	boundResults[0].buffer_length = sizeof(int);
+	boundResults[0].length = &resultLen[0];
 
-    boundResults[1].buffer_type = MYSQL_TYPE_VAR_STRING;
-    boundResults[1].buffer = &motherboardId;
-    boundResults[1].buffer_length = sizeof(char) * 255;
-    boundResults[1].length = &resultLen[1];
+	boundResults[1].buffer_type = MYSQL_TYPE_VAR_STRING;
+	boundResults[1].buffer = &motherboardId;
+	boundResults[1].buffer_length = sizeof(char) * 255;
+	boundResults[1].length = &resultLen[1];
 
-    boundResults[2].buffer_type = MYSQL_TYPE_VAR_STRING;
-    boundResults[2].buffer = &orderTarget;
-    boundResults[2].buffer_length = sizeof(char) * 255;
-    boundResults[2].length = &resultLen[2];
+	boundResults[2].buffer_type = MYSQL_TYPE_VAR_STRING;
+	boundResults[2].buffer = &orderTarget;
+	boundResults[2].buffer_length = sizeof(char) * 255;
+	boundResults[2].length = &resultLen[2];
 
-    boundResults[3].buffer_type = MYSQL_TYPE_VAR_STRING;
-    boundResults[3].buffer = decryptPassword;
-    boundResults[3].buffer_length = sizeof(char) * 255;
-    boundResults[3].length = &resultLen[3];
+	boundResults[3].buffer_type = MYSQL_TYPE_VAR_STRING;
+	boundResults[3].buffer = decryptPassword;
+	boundResults[3].buffer_length = sizeof(char) * 255;
+	boundResults[3].length = &resultLen[3];
 
-    boundResults[4].buffer_type = MYSQL_TYPE_LONG;
-    boundResults[4].buffer = &resourceId;
-    boundResults[4].buffer_length = sizeof(int);
-    boundResults[4].length = &resultLen[4];
+	boundResults[4].buffer_type = MYSQL_TYPE_LONG;
+	boundResults[4].buffer = &resourceId;
+	boundResults[4].buffer_length = sizeof(int);
+	boundResults[4].length = &resultLen[4];
 
-    mysql_stmt_bind_result(preparedStatement, boundResults);
-    mysql_stmt_store_result(preparedStatement);
+	mysql_stmt_bind_result(preparedStatement, boundResults);
+	mysql_stmt_store_result(preparedStatement);
 	
 	ListNode * licenseList = malloc(sizeof(ListNode));
 	ListNode * current = licenseList;
@@ -161,8 +161,8 @@ LicenseData * getLicenseDataInMySQL(WrappedMySQLSession * session, size_t *amoun
 		}
 		
 		bool motherBoardInit;
-        boundResults[1].is_null = &motherBoardInit;
-        mysql_stmt_fetch_column(preparedStatement, &boundResults[1], 1, index);
+		boundResults[1].is_null = &motherBoardInit;
+		mysql_stmt_fetch_column(preparedStatement, &boundResults[1], 1, index);
 		if (motherBoardInit)
 		{
 			// schedule motherboard init.
@@ -174,8 +174,8 @@ LicenseData * getLicenseDataInMySQL(WrappedMySQLSession * session, size_t *amoun
 		{
 			char * motherboard = malloc(resultLen[1]);
 			boundResults[2].buffer = motherboard;
-            mysql_stmt_fetch_column(preparedStatement, &boundResults[1], 1, index); // again.
-            licenseData->motherboardId = motherboard;
+			mysql_stmt_fetch_column(preparedStatement, &boundResults[1], 1, index); // again.
+			licenseData->motherboardId = motherboard;
 			licenseData->motherboardIdLen = resultLen[1];
 			licenseData->motherboardUpdateRequired = false;
 		}
@@ -210,22 +210,22 @@ LicenseData * getLicenseDataInMySQL(WrappedMySQLSession * session, size_t *amoun
 	LicenseData * data = result;
 	current = licenseList;
 	if (current->next)
-    {
-        do
-        {
-            if (current->licenseData)
-                memcpy(data, current->licenseData, sizeof(LicenseData));
-            data++;
-            ListNode *n = current;
-            current = current->next;
-            free(n);
-        } while (current);
-    }
-    else
-    {
-        free(result);
-        result = NULL;
-    }
+	{
+		do
+		{
+			if (current->licenseData)
+				memcpy(data, current->licenseData, sizeof(LicenseData));
+			data++;
+			ListNode *n = current;
+			current = current->next;
+			free(n);
+		} while (current);
+	}
+	else
+	{
+		free(result);
+		result = NULL;
+	}
 	
 	final:
 	if (query)
