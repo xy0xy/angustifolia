@@ -1,6 +1,7 @@
 #include "event_handling.h"
 #include "../mysql/mcres_mysql.h"
 #include "../motd/motd.h"
+#include "../crypto/base64.h"
 
 const int blockedUserId[] = {-1};
 
@@ -178,6 +179,10 @@ int onClientRequestDecrypt(NetworkManager client, Packet * requestPacket, Wrappe
 	decryptedLen -= sizeof(char) * orderLen;
 	mark += sizeof(size_t);
 
+	size_t encodedMotherboardIdLen = b64e_size(motherboardLen);
+	char * encodedMotherboardId = malloc(encodedMotherboardIdLen * sizeof(char));
+	base64_encode(motherboardData, motherboardLen, encodedMotherboardId);
+
 	WrappedMySQLSession * session = connectMySQL(3306);
 	
 	size_t dataAmount;
@@ -195,15 +200,15 @@ int onClientRequestDecrypt(NetworkManager client, Packet * requestPacket, Wrappe
 
             if (data->motherboardUpdateRequired)
             {
-                updateMotherboard(session, order, orderLen, userId, resourceId, motherboardData, motherboardLen);
+                updateMotherboard(session, order, orderLen, userId, resourceId, encodedMotherboardId, encodedMotherboardIdLen);
                 verifiedData = &check;
                 break;
             }
 
-            if (check.motherboardIdLen != motherboardLen)
+            if (check.motherboardIdLen != encodedMotherboardIdLen)
                 continue;
 
-            if (!memcmp(check.motherboardId, motherboardData, motherboardLen * sizeof(char)))
+            if (!memcmp(check.motherboardId, encodedMotherboardId, encodedMotherboardIdLen * sizeof(char)))
             {
                 verifiedData = &check;
                 break;
@@ -261,9 +266,20 @@ int onClientRequestDecrypt(NetworkManager client, Packet * requestPacket, Wrappe
 	err:
 	free(encrypted);
 	free(decrypted);
+	free(order);
+	free(motherboardData);
+	free(encodedMotherboardId);
 	destroyPacket(requestPacket);
 	if (data)
-		free(data);
+    {
+        for (size_t i = 0; i < dataAmount; i++)
+        {
+            LicenseData check = data[i];
+            free(check.motherboardId);
+            free(check.order);
+        }
+        free(data);
+    }
 	return errno;
 }
 int onClientRequestVerify(NetworkManager client, Packet * requestPacket, WrappedKey signKey, WrappedKey decryptKey, WrappedKey clientEncryptKey)

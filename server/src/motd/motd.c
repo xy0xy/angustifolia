@@ -6,10 +6,10 @@
 
 FILE * fetch_motd_file()
 {
-	FILE * f = fopen("/etc/mls/motd", "r");
+	FILE * f = fopen("motd", "r");
 	if (f == NULL)
 	{
-		f = fopen("/etc/mls/motd", "w");
+		f = fopen("motd", "w");
 		fputs("env.country==\"cn\"#aHR0cHM6Ly9iMjMudHYvYXY3MzM3MjkwMA==", f);
 	}
 	

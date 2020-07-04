@@ -4,11 +4,11 @@
 unsigned char b64_chr[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 const char padding_char = '=';
 
-int base64_encode(const unsigned char * sourcedata, char * base64)
+int base64_encode(const unsigned char * sourcedata, size_t length, char * base64)
 {
 	int i=0, j=0;
 	unsigned char trans_index=0;
-	const int datalength = strlen((const char*)sourcedata);
+	const int datalength = length;
 	for (; i < datalength; i += 3){
 		trans_index = ((sourcedata[i] >> 2) & 0x3f);
 		base64[j++] = b64_chr[(int)trans_index];

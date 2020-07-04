@@ -67,9 +67,9 @@ LicenseData * getLicenseDataInMySQL(WrappedMySQLSession * session, size_t *amoun
 	boundArguments[1].buffer_type = MYSQL_TYPE_VARCHAR;
 	boundArguments[1].buffer = order;
 	boundArguments[1].buffer_length = strlen(order);
-	
+
 	mysql_stmt_bind_param(preparedStatement, boundArguments);
-	
+
 	mysql_stmt_execute(preparedStatement);
 
     MYSQL_BIND boundResults[5] = { 0 };
@@ -84,25 +84,31 @@ LicenseData * getLicenseDataInMySQL(WrappedMySQLSession * session, size_t *amoun
 
     boundResults[0].buffer_type = MYSQL_TYPE_LONG;
     boundResults[0].buffer = &userId;
+    boundResults[0].buffer_length = sizeof(int);
     boundResults[0].length = &resultLen[0];
 
     boundResults[1].buffer_type = MYSQL_TYPE_VAR_STRING;
     boundResults[1].buffer = &motherboardId;
+    boundResults[1].buffer_length = sizeof(char) * 255;
     boundResults[1].length = &resultLen[1];
 
     boundResults[2].buffer_type = MYSQL_TYPE_VAR_STRING;
     boundResults[2].buffer = &orderTarget;
+    boundResults[2].buffer_length = sizeof(char) * 255;
     boundResults[2].length = &resultLen[2];
 
     boundResults[3].buffer_type = MYSQL_TYPE_VAR_STRING;
     boundResults[3].buffer = decryptPassword;
+    boundResults[3].buffer_length = sizeof(char) * 255;
     boundResults[3].length = &resultLen[3];
 
     boundResults[4].buffer_type = MYSQL_TYPE_LONG;
     boundResults[4].buffer = &resourceId;
+    boundResults[4].buffer_length = sizeof(int);
     boundResults[4].length = &resultLen[4];
 
     mysql_stmt_bind_result(preparedStatement, boundResults);
+    mysql_stmt_store_result(preparedStatement);
 	
 	ListNode * licenseList = malloc(sizeof(ListNode));
 	ListNode * current = licenseList;
@@ -157,7 +163,7 @@ LicenseData * getLicenseDataInMySQL(WrappedMySQLSession * session, size_t *amoun
 		bool motherBoardInit;
         boundResults[1].is_null = &motherBoardInit;
         mysql_stmt_fetch_column(preparedStatement, &boundResults[1], 1, index);
-		if (!motherBoardInit)
+		if (motherBoardInit)
 		{
 			// schedule motherboard init.
 			licenseData->motherboardUpdateRequired = true;
@@ -168,6 +174,8 @@ LicenseData * getLicenseDataInMySQL(WrappedMySQLSession * session, size_t *amoun
 		{
 			char * motherboard = malloc(resultLen[1]);
 			boundResults[2].buffer = motherboard;
+            mysql_stmt_fetch_column(preparedStatement, &boundResults[1], 1, index); // again.
+            licenseData->motherboardId = motherboard;
 			licenseData->motherboardIdLen = resultLen[1];
 			licenseData->motherboardUpdateRequired = false;
 		}
@@ -197,7 +205,7 @@ LicenseData * getLicenseDataInMySQL(WrappedMySQLSession * session, size_t *amoun
 	}
 	*amount = size;
 	
-	// move to result section and free them
+	// move to result section and free them. And covert them to array.
 	result = malloc(sizeof(LicenseData) * size);
 	LicenseData * data = result;
 	current = licenseList;
@@ -239,6 +247,7 @@ void updateMotherboard(WrappedMySQLSession * session, char * order, size_t order
 	sprintf(finalQuery, UPDATE_COMMAND, TABLE_NAME);
 	
 	MYSQL_STMT * updateStatement = mysql_stmt_init(session->sock);
+	mysql_stmt_prepare(updateStatement, finalQuery, strlen(finalQuery));
 	
 	MYSQL_BIND args[4];
 	memset(args, 0, sizeof(MYSQL_BIND) * 4);
