@@ -173,7 +173,7 @@ LicenseData * getLicenseDataInMySQL(WrappedMySQLSession * session, size_t *amoun
 		else
 		{
 			char * motherboard = malloc(resultLen[1]);
-			boundResults[2].buffer = motherboard;
+			boundResults[1].buffer = motherboard;
 			mysql_stmt_fetch_column(preparedStatement, &boundResults[1], 1, index); // again.
 			licenseData->motherboardId = motherboard;
 			licenseData->motherboardIdLen = resultLen[1];
